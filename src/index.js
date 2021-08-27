@@ -26,6 +26,17 @@ app.post("/account", (request, response) => {
     return response.status(201).send("ok");
 });
 
+app.get("/statement/:cpf", (request, response) => {
+    const { cpf } = request.params;
+    const customer = customers.find((customer) => customer.cpf === cpf);
+
+    if (!customer) {
+        return response.status(400).send({ error: "Customer not found" });
+    }
+
+    return response.json(customer.statement);
+});
+
 app.get("/account", (request, response) => {
 
     for (let i = 0; i <= customers.length; i++) {
