@@ -101,13 +101,36 @@ app.get("/statement/date", verifyIfExistsAccountCPF, (request, response) => {
     return response.json(statement);
 });
 
-app.get("/account", (request, response) => {
+app.get("/account", verifyIfExistsAccountCPF, (request, response) => {
 
-    for (let i = 0; i <= customers.length; i++) {
-        return response.json(customers[i]);
-    }
+    const { customer } = request;
+
+    return response.json(customer);
+
 
 });
+
+app.put("/account", verifyIfExistsAccountCPF, (request, response) => {
+    const { name } = request.body;
+    const { customer } = request;
+    customer.name = name;
+
+    return response.status(201).send();
+});
+
+app.delete("/account", verifyIfExistsAccountCPF, (request, response) => {
+    const { customer } = request;
+
+    customers.splice(customer, 1);
+
+    return response.status(200).json(customers)
+});
+
+app.get("/balance", verifyIfExistsAccountCPF, (request, response) => {
+    const { customer } = request;
+    const balance = getBalance(customer.statement);
+    return response.json(balance);
+})
 
 app.listen(porta, () => {
     console.log("Server is running!!!");
