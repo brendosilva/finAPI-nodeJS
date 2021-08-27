@@ -10,13 +10,16 @@ app.use(express.json());
 
 app.post("/account", (request, response) => {
     const { name, cpf } = request.body;
+    const custormerAlreadyExists = customers.some((customer) => customer.cpf == cpf);
 
-    const id = uuid4();
+    if (custormerAlreadyExists) {
+        return response.status(400).json({ error: "Customer Already Exists" });
+    }
 
     customers.push({
         cpf,
         name,
-        id,
+        id: uuid4(),
         statement: []
     });
 
@@ -28,7 +31,8 @@ app.get("/account", (request, response) => {
     for (let i = 0; i <= customers.length; i++) {
         return response.json(customers[i]);
     }
-})
+
+});
 
 app.listen(porta, () => {
     console.log("Server is running!!!");
